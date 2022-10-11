@@ -30,57 +30,111 @@ static void TransitionToScreen(int screen)
 // Update transition effect (fade-in, fade-out)
 static void UpdateTransition(void)
 {
-    if (!transFadeOut)
+    // Update
+    //----------------------------------------------------------------------------------
+
+    if (!onTransition)
     {
-        transAlpha += 0.05f;
-
-        // NOTE: Due to float internal representation, condition jumps on 1.0f instead of 1.05f
-        // For that reason we compare against 1.01f, to avoid last frame loading stop
-        if (transAlpha > 1.01f)
+        switch(currentScreen)
         {
-            transAlpha = 1.0f;
-
-            // Unload current screen
-            switch (transFromScreen)
+            case LOGO:
             {
-                case LOGO: UnloadLogoScreen(); break;
-                case TITLE: UnloadTitleScreen(); break;
-                case OPTIONS: UnloadOptionsScreen(); break;
-                case GAMEPLAY: UnloadGameplayScreen(); break;
-                case ENDING: UnloadEndingScreen(); break;
-                default: break;
-            }
+                UpdateLogoScreen();
 
-            // Load next screen
-            switch (transToScreen)
+                if (FinishLogoScreen()) TransitionToScreen(TITLE);
+
+            } break;
+            case TITLE:
             {
-                case LOGO: InitLogoScreen(); break;
-                case TITLE: InitTitleScreen(); break;
-                case GAMEPLAY: InitGameplayScreen(); break;
-                case ENDING: InitEndingScreen(); break;
-                default: break;
-            }
+                UpdateTitleScreen();
 
-            currentScreen = transToScreen;
+                if (FinishTitleScreen() == 1) TransitionToScreen(OPTIONS);
+                else if (FinishTitleScreen() == 2) TransitionToScreen(GAMEPLAY);
 
-            // Activate fade out effect to next loaded screen
-            transFadeOut = true;
+            } break;
+            case OPTIONS:
+            {
+                UpdateOptionsScreen();
+
+                if (FinishOptionsScreen()) TransitionToScreen(TITLE);
+
+            } break;
+            case GAMEPLAY:
+            {
+                UpdateGameplayScreen();
+
+                if (FinishGameplayScreen() == 1) TransitionToScreen(ENDING);
+                //else if (FinishGameplayScreen() == 2) TransitionToScreen(TITLE);
+
+            } break;
+            case ENDING:
+            {
+                UpdateEndingScreen();
+
+                if (FinishEndingScreen() == 1) TransitionToScreen(TITLE);
+
+            } break;
+            default: break;
         }
     }
-    else  // Transition fade out logic
-    {
-        transAlpha -= 0.02f;
+    else {
+		 //----------------------------------------------------------------------------------
+		 if (!transFadeOut)
+		 {
+			  transAlpha += 0.05f;
 
-        if (transAlpha < -0.01f)
-        {
-            transAlpha = 0.0f;
-            transFadeOut = false;
-            onTransition = false;
-            transFromScreen = -1;
-            transToScreen = -1;
-        }
-    }
+			  // NOTE: Due to float internal representation, condition jumps on 1.0f instead of 1.05f
+			  // For that reason we compare against 1.01f, to avoid last frame loading stop
+			  if (transAlpha > 1.01f)
+			  {
+					transAlpha = 1.0f;
+
+					// Unload current screen
+					switch (transFromScreen)
+					{
+						 case LOGO: UnloadLogoScreen(); break;
+						 case TITLE: UnloadTitleScreen(); break;
+						 case OPTIONS: UnloadOptionsScreen(); break;
+						 case GAMEPLAY: UnloadGameplayScreen(); break;
+						 case ENDING: UnloadEndingScreen(); break;
+						 default: break;
+					}
+
+					// Load next screen
+					switch (transToScreen)
+					{
+						 case LOGO: InitLogoScreen(); break;
+						 case TITLE: InitTitleScreen(); break;
+						 case GAMEPLAY: InitGameplayScreen(); break;
+						 case ENDING: InitEndingScreen(); break;
+						 default: break;
+					}
+
+					currentScreen = transToScreen;
+
+					// Activate fade out effect to next loaded screen
+					transFadeOut = true;
+			  }
+		 }
+		 else  // Transition fade out logic
+		 {
+			  transAlpha -= 0.02f;
+
+			  if (transAlpha < -0.01f)
+			  {
+					transAlpha = 0.0f;
+					transFadeOut = false;
+					onTransition = false;
+					transFromScreen = -1;
+					transToScreen = -1;
+			  }
+		 }
+	}
 }
+
+
+
+
 
 // Draw transition effect (full-screen rectangle)
 static void DrawTransition(void)

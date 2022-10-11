@@ -12,6 +12,8 @@
 *
 ********************************************************************************************/
 
+#include <stdlib.h>
+#include <stdio.h>
 #include "raylib.h"
 #include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
 
@@ -36,6 +38,7 @@ static const int screenHeight = 450;
 
 #include "transitions.c"
 #include "frame_draw.c"
+#include "static.c"
 
 //----------------------------------------------------------------------------------
 // Local Functions Declaration
@@ -54,6 +57,8 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib game template");
 
     InitAudioDevice();      // Initialize audio device
+
+	 static_image_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
     font = LoadFont("resources/mecha.png");
@@ -74,10 +79,19 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        UpdateDrawFrame();
-    }
+	 // Detect window close button or ESC key
+	while (!WindowShouldClose())	{
+		// NOTE: Music keeps playing between screens
+		static_image_update();
+		UpdateMusicStream(music);       
+		UpdateTransition();
+
+		BeginDrawing();
+		UpdateDrawFrame();
+		static_image_draw();
+		DrawFPS(10, 10);
+		EndDrawing();
+	}
 #endif
 
     // De-Initialization
