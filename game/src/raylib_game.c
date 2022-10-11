@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "raylib.h"
+#include "rng-squirrel3.c"
 #include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
 
 #if defined(PLATFORM_WEB)
@@ -33,8 +34,17 @@ Sound fxCoin = { 0 };
 //----------------------------------------------------------------------------------
 // Local Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
-static const int screenWidth = 800;
-static const int screenHeight = 450;
+int screenWidth = 1600;
+int screenHeight = 900;
+
+#define OVERSCALE 3
+int canvas_width = 256;
+int canvas_height = 256;
+Rectangle canvas_rect;
+RenderTexture2D overscan_render;
+Rectangle overscan_rect;
+
+int frame_counter = 0;
 
 #include "transitions.c"
 #include "frame_draw.c"
@@ -50,15 +60,19 @@ static void UpdateDrawFrame(void);          // Update and draw one frame
 //----------------------------------------------------------------------------------
 // Main entry point
 //----------------------------------------------------------------------------------
-int main(void)
-{
+int main(void) {
     // Initialization
     //---------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib-xp");
+	InitWindow(screenWidth, screenHeight, "raylib-xp");
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-    InitAudioDevice();      // Initialize audio device
+	InitAudioDevice();      // Initialize audio device
 
-	 static_image_init();
+	canvas_rect = (Rectangle) { 0, 0, canvas_width, canvas_height };
+	overscan_rect = (Rectangle) { 0, 0, canvas_width * OVERSCALE, canvas_height * OVERSCALE };
+	overscan_render = LoadRenderTexture(overscan_rect.width, overscan_rect.height);
+	SetTextureFilter(overscan_render.texture, TEXTURE_FILTER_BILINEAR);
+	static_image_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
     font = LoadFont("resources/mecha.png");
@@ -81,16 +95,27 @@ int main(void)
     // Main game loop
 	 // Detect window close button or ESC key
 	while (!WindowShouldClose())	{
-		// NOTE: Music keeps playing between screens
-		static_image_update();
-		UpdateMusicStream(music);       
-		UpdateTransition();
 
+		// NOTE: Music keeps playing between screens
+		UpdateMusicStream(music);       
+
+		// update graphics
+		static_image_update();
+		UpdateTransition();
+		if (IsWindowResized()) {
+			screenWidth = GetScreenWidth();
+			screenHeight = GetScreenHeight();
+		}
+
+		// actually draw the screen
 		BeginDrawing();
 		UpdateDrawFrame();
 		static_image_draw();
+		DrawTexturePro(overscan_render.texture, overscan_rect, (Rectangle) { 0, 0, screenWidth, screenHeight}, (Vector2) { 0, 0 }, 0.f, WHITE);  
 		DrawFPS(10, 10);
 		EndDrawing();
+
+		frame_counter++;
 	}
 #endif
 
