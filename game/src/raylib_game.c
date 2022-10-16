@@ -65,6 +65,7 @@ int main(void) {
 	InitAudioDevice();      // Initialize audio device
 
 	screen_init();
+	antlife_init();
 	static_image_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
@@ -97,7 +98,8 @@ int main(void) {
 			screenWidth = GetScreenWidth();
 			screenHeight = GetScreenHeight();
 		}
-		static_image_update();
+		//static_image_update();
+		antlife_update();
 		screen_update();
 		UpdateTransition();
 
