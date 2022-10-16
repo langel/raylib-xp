@@ -1,14 +1,10 @@
 
-#include "raylib.h"
-
-RenderTexture2D static_target;
 
 unsigned * static_pixels = NULL;
 
 
 void static_image_init() {
 	static_pixels = malloc(canvas_width * canvas_height * sizeof(unsigned));
-	static_target = LoadRenderTexture(canvas_width, canvas_height);
 }
 
 
@@ -28,17 +24,8 @@ void static_image_update() {
 			i++;
 		}
 	}
-	UpdateTexture(static_target.texture, static_pixels);
-	BeginTextureMode(overscan_render);
-	DrawTexturePro(static_target.texture, canvas_rect, overscan_rect, (Vector2) { 0, 0 }, 0.f, WHITE);  
-	EndTextureMode();
+	UpdateTexture(screen_target.texture, static_pixels);
 }
 
 
 
-void static_image_draw() {
-
-//	DrawTexture(static_target.texture, screenWidth/2 - static_target.texture.width/2, screenHeight/2 - static_target.texture.height/2 - 40, WHITE);
-//	DrawTexturePro(static_target.texture, (Rectangle) { 0, 0, canvas_width, canvas_height }, (Rectangle) { 0, 0, screenWidth, screenHeight}, (Vector2) { 0, 0 }, 0.f, WHITE);  
-
-}

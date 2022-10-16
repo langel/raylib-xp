@@ -37,17 +37,13 @@ Sound fxCoin = { 0 };
 int screenWidth = 1600;
 int screenHeight = 900;
 
-#define OVERSCALE 3
-int canvas_width = 256;
-int canvas_height = 256;
-Rectangle canvas_rect;
-RenderTexture2D overscan_render;
-Rectangle overscan_rect;
-
 int frame_counter = 0;
+
+#include "screen.c"
 
 #include "transitions.c"
 #include "frame_draw.c"
+#include "ant_life.c"
 #include "static.c"
 
 //----------------------------------------------------------------------------------
@@ -68,10 +64,7 @@ int main(void) {
 
 	InitAudioDevice();      // Initialize audio device
 
-	canvas_rect = (Rectangle) { 0, 0, canvas_width, canvas_height };
-	overscan_rect = (Rectangle) { 0, 0, canvas_width * OVERSCALE, canvas_height * OVERSCALE };
-	overscan_render = LoadRenderTexture(overscan_rect.width, overscan_rect.height);
-	SetTextureFilter(overscan_render.texture, TEXTURE_FILTER_BILINEAR);
+	screen_init();
 	static_image_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
@@ -100,18 +93,18 @@ int main(void) {
 		UpdateMusicStream(music);       
 
 		// update graphics
-		static_image_update();
-		UpdateTransition();
 		if (IsWindowResized()) {
 			screenWidth = GetScreenWidth();
 			screenHeight = GetScreenHeight();
 		}
+		static_image_update();
+		screen_update();
+		UpdateTransition();
 
 		// actually draw the screen
 		BeginDrawing();
 		UpdateDrawFrame();
-		static_image_draw();
-		DrawTexturePro(overscan_render.texture, overscan_rect, (Rectangle) { 0, 0, screenWidth, screenHeight}, (Vector2) { 0, 0 }, 0.f, WHITE);  
+		screen_draw();
 		DrawFPS(10, 10);
 		EndDrawing();
 
