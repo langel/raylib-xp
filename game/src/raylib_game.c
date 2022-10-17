@@ -107,7 +107,7 @@ int main(void) {
 		BeginDrawing();
 		UpdateDrawFrame();
 		screen_draw();
-		DrawFPS(10, 10);
+//		DrawFPS(10, 10);
 		EndDrawing();
 
 		frame_counter++;
