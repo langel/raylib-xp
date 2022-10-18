@@ -1,6 +1,4 @@
 
-#define ANT_COUNT 3
-
 unsigned * antlife_pixels = NULL;
 unsigned antlife_off;
 unsigned antlife_on;
@@ -13,7 +11,8 @@ typedef struct {
 	int pos;
 } ant_ent;
 
-ant_ent ants[ANT_COUNT];
+ant_ent ants[256];
+int ant_count;
 
 unsigned ant_black = 0xff111111;
 unsigned ant_white = 0xffeeeeee;
@@ -23,7 +22,8 @@ unsigned ant_cream = 0xffd0fdff;
 
 
 void antlife_init() {
-	for (int i = 0; i < ANT_COUNT; i++) {
+	ant_count = 9;
+	for (int i = 0; i < ant_count; i++) {
 		ants[i].x = (i % 3) * (canvas_width / 4) + canvas_width / 4;
 		ants[i].y = (int)(i / 3) * (canvas_height / 4) + canvas_height / 4;
 		ants[i].d = 0;
@@ -145,7 +145,7 @@ void antlife_update() {
 	conway_cycle();
 	// multiple ant steps per frame
 	for (int f = 0; f < 1700; f++) {
-		for (int i = 0; i < ANT_COUNT; i++) {
+		for (int i = 0; i < ant_count; i++) {
 			ant_cycle(i);
 		}
 	}
