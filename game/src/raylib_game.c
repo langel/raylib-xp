@@ -15,7 +15,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "raylib.h"
-#include "rng-squirrel3.c"
 #include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
 
 #if defined(PLATFORM_WEB)
@@ -39,12 +38,10 @@ int screenHeight = 900;
 
 int frame_counter = 0;
 
-#include "screen.c"
-
 #include "transitions.c"
 #include "frame_draw.c"
-#include "ant_life.c"
-#include "static.c"
+#include "lib/core.c"
+#include "src/core.c"
 
 //----------------------------------------------------------------------------------
 // Local Functions Declaration
