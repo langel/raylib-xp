@@ -37,7 +37,7 @@ void screen_update() {
 
 
 void screen_draw() {
-	DrawTexturePro(overscan_render.texture, overscan_rect, (Rectangle) { 0, 0, screenWidth, screenHeight }, (Vector2) { 0, 0 }, 0.f, WHITE);  
+	DrawTexturePro(overscan_render.texture, overscan_rect, (Rectangle) { 0, 0, window_width, window_height }, (Vector2) { 0, 0 }, 0.f, WHITE);  
 }
 
 

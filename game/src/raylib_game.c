@@ -15,7 +15,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "raylib.h"
-#include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
+#include "lib/core.c"
+#include "src/core.c"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
@@ -25,30 +26,10 @@
 // Shared Variables Definition (global)
 // NOTE: Those variables are shared between modules through screens.h
 //----------------------------------------------------------------------------------
-GameScreen currentScreen = 0;
-Font font = { 0 };
 Music music = { 0 };
 Sound fxCoin = { 0 };
 
-//----------------------------------------------------------------------------------
-// Local Variables Definition (local to this module)
-//----------------------------------------------------------------------------------
-int screenWidth = 1600;
-int screenHeight = 900;
 
-int frame_counter = 0;
-
-#include "transitions.c"
-#include "frame_draw.c"
-#include "lib/core.c"
-#include "src/core.c"
-
-//----------------------------------------------------------------------------------
-// Local Functions Declaration
-//----------------------------------------------------------------------------------
-static void ChangeToScreen(int screen);     // Change to screen, no transition effect
-
-static void UpdateDrawFrame(void);          // Update and draw one frame
 
 //----------------------------------------------------------------------------------
 // Main entry point
@@ -56,7 +37,7 @@ static void UpdateDrawFrame(void);          // Update and draw one frame
 int main(void) {
     // Initialization
     //---------------------------------------------------------
-	InitWindow(screenWidth, screenHeight, "raylib-xp");
+	window_init(1600, 900, "raylib-xp");
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
 	InitAudioDevice();      // Initialize audio device
@@ -66,16 +47,13 @@ int main(void) {
 	static_image_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
-    font = LoadFont("resources/mecha.png");
     music = LoadMusicStream("resources/ambient.ogg");
     fxCoin = LoadSound("resources/coin.wav");
 
     SetMusicVolume(music, 1.0f);
     //PlayMusicStream(music);
+	 SetSoundVolume(fxCoin, 0.25f);
 
-    // Setup and init first screen
-    currentScreen = LOGO;
-    InitLogoScreen();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
@@ -89,42 +67,31 @@ int main(void) {
 
 		// NOTE: Music keeps playing between screens
 		UpdateMusicStream(music);       
+		// coin sfx important
+		if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsGestureDetected(GESTURE_TAP)) {
+			PlaySound(fxCoin);
+		}
 
 		// update graphics
-		if (IsWindowResized()) {
-			screenWidth = GetScreenWidth();
-			screenHeight = GetScreenHeight();
-		}
+		window_update();
 		//static_image_update();
 		antlife_update();
 		screen_update();
-		UpdateTransition();
 
 		// actually draw the screen
 		BeginDrawing();
-		UpdateDrawFrame();
 		screen_draw();
 //		DrawFPS(10, 10);
 		EndDrawing();
 
-		frame_counter++;
+		frame_counter_inc;
 	}
 #endif
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    // Unload current screen data before closing
-    switch (currentScreen)
-    {
-        case LOGO: UnloadLogoScreen(); break;
-        case TITLE: UnloadTitleScreen(); break;
-        case GAMEPLAY: UnloadGameplayScreen(); break;
-        case ENDING: UnloadEndingScreen(); break;
-        default: break;
-    }
 
     // Unload global data loaded
-    UnloadFont(font);
     UnloadMusicStream(music);
     UnloadSound(fxCoin);
 
