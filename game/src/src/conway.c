@@ -1,4 +1,5 @@
 
+unsigned * conway_buffer = NULL;
 
 void conway_cycle() {
 	unsigned pixel;
@@ -9,48 +10,48 @@ void conway_cycle() {
 	for (int x = 0; x < canvas_width; x++) {
 		for (int y = 0; y < canvas_height; y++) {
 			living_neighbors = 0;
-			pixel = antlife_pixels[x + y * canvas_height];
+			pixel = sandbox_pixels[x + y * canvas_height];
 			living_cell = (pixel == antlife_on) ? 1 : 0;
 			// pos 0
 			xx = screen_dex(x);
 			yy = screen_dey(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 1
 			xx = x;
 			yy = screen_dey(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 2
 			xx = screen_inx(x);
 			yy = screen_dey(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 3
 			xx = screen_dex(x);
 			yy = y;
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos == current cell
 			// pos 5
 			xx = screen_inx(x);
 			yy = y;
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 6
 			xx = screen_dex(x);
 			yy = screen_iny(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 7
 			xx = x;
 			yy = screen_iny(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// pos 8
 			xx = screen_inx(x);
 			yy = screen_iny(y);
-			pixel = antlife_pixels[screen_pos(xx, yy)];
+			pixel = sandbox_pixels[screen_pos(xx, yy)];
 			if (pixel == antlife_on) living_neighbors++;
 			// conway rules
 			if (living_cell) {
@@ -63,7 +64,7 @@ void conway_cycle() {
 			}
 			else living_cell = 0;
 			pixel = (living_cell) ? antlife_on : antlife_off;
-			antlife_conways[screen_pos(x, y)] = pixel;
+			conway_buffer[screen_pos(x, y)] = pixel;
 /*
 Any live cell with two or three live neighbours survives.
 
@@ -73,5 +74,5 @@ All other live cells die in the next generation. Similarly, all other dead cells
 */
 		}
 	}
-	memcpy(antlife_pixels, antlife_conways, screen_size);
+	memcpy(sandbox_pixels, conway_buffer, screen_size);
 }

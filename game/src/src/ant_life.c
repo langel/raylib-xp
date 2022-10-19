@@ -1,8 +1,6 @@
 
-unsigned * antlife_pixels = NULL;
 unsigned antlife_off;
 unsigned antlife_on;
-unsigned * antlife_conways = NULL;
 
 typedef struct {
 	int d;

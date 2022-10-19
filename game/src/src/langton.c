@@ -2,16 +2,16 @@
 void langton_cycle(int ant_id) {
 	ant_ent ant = ants[ant_id];
 	int antpos = screen_pos(ant.x, ant.y);
-	unsigned pixel = antlife_pixels[antpos];
+	unsigned pixel = sandbox_pixels[antpos];
 	if (pixel == antlife_off) {
 		ant.d++;
 		if (ant.d > 3) ant.d = 0;
-		antlife_pixels[antpos] = antlife_on;
+		sandbox_pixels[antpos] = antlife_on;
 	}
 	if (pixel == antlife_on) {
 		ant.d--;
 		if (ant.d < 0) ant.d = 3;
-		antlife_pixels[antpos] = antlife_off;
+		sandbox_pixels[antpos] = antlife_off;
 	}
 	// right
 	if (ant.d == 0) ant.x = screen_inx(ant.x);

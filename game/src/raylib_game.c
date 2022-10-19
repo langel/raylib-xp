@@ -43,8 +43,7 @@ int main(void) {
 	InitAudioDevice();      // Initialize audio device
 
 	screen_init();
-	antlife_init();
-	static_image_init();
+	src_init();
 
     // Load global data (assets that must be available in all screens, i.e. font)
     music = LoadMusicStream("resources/ambient.ogg");
@@ -84,7 +83,7 @@ int main(void) {
 //		DrawFPS(10, 10);
 		EndDrawing();
 
-		frame_counter_inc;
+		frame_counter_inc();
 	}
 #endif
 
