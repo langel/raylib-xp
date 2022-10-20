@@ -10,7 +10,8 @@ void conway_cycle() {
 	for (int x = 0; x < canvas_width; x++) {
 		for (int y = 0; y < canvas_height; y++) {
 			living_neighbors = 0;
-			pixel = sandbox_pixels[x + y * canvas_height];
+			// XXX broken conway was x + y * canvas_height   xD
+			pixel = sandbox_pixels[screen_pos(x, y)];
 			living_cell = (pixel == antlife_on) ? 1 : 0;
 			// pos 0
 			xx = screen_dex(x);
@@ -59,7 +60,7 @@ void conway_cycle() {
 					living_cell = 0;
 				}
 			}
-			else if (!living_cell && living_neighbors == 3) {
+			else if (living_neighbors == 3) {
 				living_cell = 1;
 			}
 			else living_cell = 0;
