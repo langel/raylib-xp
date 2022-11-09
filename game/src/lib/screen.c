@@ -9,7 +9,7 @@ RenderTexture2D overscan_render;
 Rectangle overscan_rect;
 
 RenderTexture2D screen_target;
-unsigned * screen_pixels = NULL;
+uint32_t * screen_pixels = NULL;
 int screen_size;
 
 
@@ -24,7 +24,7 @@ void screen_init() {
 	overscan_render = LoadRenderTexture(overscan_rect.width, overscan_rect.height);
 	SetTextureFilter(overscan_render.texture, TEXTURE_FILTER_BILINEAR);
 	screen_target = LoadRenderTexture(canvas_width, canvas_height);
-	screen_size = canvas_size * sizeof(unsigned);
+	screen_size = canvas_size * sizeof(uint32_t);
 	screen_pixels = malloc(screen_size);
 }
 

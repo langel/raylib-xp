@@ -1,8 +1,8 @@
 
-unsigned * conway_buffer = NULL;
+uint32_t * conway_buffer = NULL;
 
 void conway_cycle() {
-	unsigned pixel;
+	uint32_t pixel;
 	int xx;
 	int yy;
 	int living_neighbors;

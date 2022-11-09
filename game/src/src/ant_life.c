@@ -1,6 +1,6 @@
 
-unsigned antlife_off;
-unsigned antlife_on;
+uint32_t antlife_off;
+uint32_t antlife_on;
 
 typedef struct {
 	int d;
